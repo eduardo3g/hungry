@@ -32,6 +32,7 @@
     "serverless-export-env": "^2.0.0"
   },
   "dependencies": {
+    "aws4": "^1.11.0",
     "axios": "^0.21.1",
     "mustache": "^4.2.0"
   }
