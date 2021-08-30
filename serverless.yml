@@ -48,6 +48,10 @@ functions:
       - http:
           path: /restaurants/search
           method: post
+          authorizer:
+            name: CognitoAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
     environment:
       RESTAURANTS_TABLE: !Ref RestaurantsTable
 
