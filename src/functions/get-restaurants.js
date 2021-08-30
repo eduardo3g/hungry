@@ -16,7 +16,9 @@ const getRestaurants = async limit => {
   const response = await dynamodb.scan(request).promise();
   console.log(`found ${response.Items.length} restaurants`);
 
-  return response.Items;
+  return response.Items.map(r => {
+    return DocumentClient.Converter.unmarshall(r);
+  });
 };
 
 // eslint-disable-next-line no-unused-vars
