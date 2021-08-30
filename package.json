@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "sls": "serverless",
-    "exportEnv": "sls export-env --all"
+    "exportEnv": "sls export-env --all",
+    "seedRestaurants": "node src/util/seed-restaurants.js"
   },
   "repository": {
     "type": "git",
