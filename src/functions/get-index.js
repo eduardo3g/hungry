@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const Mustache = require('mustache');
 const http = require('axios');
+const aws4 = require('aws4');
+const URL = require('url');
 
 const restaurantsApiRoot = process.env.RESTAURANTS_API;
 
@@ -15,35 +17,33 @@ const days = [
   'Saturday',
 ];
 
-let html;
-
-function loadHtml() {
-  if (!html) {
-    console.log('loading index.html...');
-    html = fs.readFileSync(
-      path.resolve(__dirname, '..', 'static', 'index.html'),
-      'utf-8',
-    );
-    console.log('loaded index.html');
-  }
-
-  return html;
-}
+const template = fs.readFileSync(
+  path.resolve(__dirname, '..', 'static', 'index.html'),
+  'utf-8',
+);
 
 const getRestaurants = async () => {
-  const httpRequest = http.get(restaurantsApiRoot);
-  return (await httpRequest).data;
+  console.log(`loading restaurants from ${restaurantsApiRoot}...`);
+  const url = URL.parse(restaurantsApiRoot);
+  const opts = {
+    host: url.hostname,
+    path: url.pathname,
+  };
+
+  aws4.sign(opts);
+
+  const httpReq = http.get(restaurantsApiRoot, {
+    headers: opts.headers,
+  });
+  return (await httpReq).data;
 };
 
 // eslint-disable-next-line no-unused-vars
 module.exports.handler = async (event, context) => {
-  const template = loadHtml();
   const restaurants = await getRestaurants();
-  console.log(`restaurants`, restaurants);
+  console.log(`found ${restaurants.length} restaurants`);
   const dayOfWeek = days[new Date().getDay()];
   const html = Mustache.render(template, { dayOfWeek, restaurants });
-  console.log('html', html);
-
   const response = {
     statusCode: 200,
     headers: {
