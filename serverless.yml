@@ -19,3 +19,27 @@ functions:
       - http:
           path: /
           method: get
+  get-restaurants:
+    handler: src/functions/get-restaurants.handler
+    events:
+      - http:
+          path: /restaurants
+          method: get
+    environment:
+      RESTAURANTS_TABLE: !Ref RestaurantsTable
+
+resources:
+  Resources:
+    RestaurantsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+  Outputs:
+    RestaurantsTableName:
+      Value: !Ref RestaurantsTable
