@@ -1,0 +1,23 @@
+{
+  "name": "hungry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sls": "serverless"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduardo3g/hungry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eduardo3g/hungry/issues"
+  },
+  "homepage": "https://github.com/eduardo3g/hungry#readme",
+  "devDependencies": {
+    "serverless": "^2.56.0"
+  }
+}
