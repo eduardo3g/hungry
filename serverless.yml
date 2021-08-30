@@ -42,6 +42,14 @@ functions:
           authorizer: aws_iam
     environment:
       RESTAURANTS_TABLE: !Ref RestaurantsTable
+  search-restaurants:
+    handler: src/functions/search-restaurants.handler
+    events:
+      - http:
+          path: /restaurants/search
+          method: post
+    environment:
+      RESTAURANTS_TABLE: !Ref RestaurantsTable
 
 resources:
   Resources:
