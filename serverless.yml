@@ -8,6 +8,10 @@ provider:
   region: eu-west-1
   environment:
     STAGE: ${self:custom.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action: dynamodb:scan
+      Resource: !GetAtt RestaurantsTable.Arn
 
 plugins:
   - serverless-export-env
@@ -20,6 +24,8 @@ custom:
 functions:
   get-index:
     handler: src/functions/get-index.handler
+    environment:
+      RESTAURANTS_API: !Sub https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}/restaurants
     events:
       - http:
           path: /
