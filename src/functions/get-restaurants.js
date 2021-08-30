@@ -1,6 +1,6 @@
-const DocumentClient = require('aws-sdk/clients/dynamodb');
+const DynamoDB = require('aws-sdk/clients/dynamodb');
 
-const dynamodb = new DocumentClient();
+const DocumentClient = new DynamoDB.DocumentClient();
 
 const defaultResults = process.env.DEFAULT_RESULTS || 8;
 const tableName = process.env.RESTAURANTS_TABLE;
@@ -13,12 +13,10 @@ const getRestaurants = async limit => {
     Limit: limit,
   };
 
-  const response = await dynamodb.scan(request).promise();
+  const response = await DocumentClient.scan(request).promise();
   console.log(`found ${response.Items.length} restaurants`);
 
-  return response.Items.map(r => {
-    return DocumentClient.Converter.unmarshall(r);
-  });
+  return response.Items;
 };
 
 // eslint-disable-next-line no-unused-vars
