@@ -1,0 +1,4 @@
+/*.yml
+/*.yaml
+.serverless
+node_modules
