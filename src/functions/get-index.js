@@ -6,6 +6,9 @@ const aws4 = require('aws4');
 const URL = require('url');
 
 const restaurantsApiRoot = process.env.RESTAURANTS_API;
+const cognitoUserPoolId = process.env.COGNITO_USER_POOL_ID;
+const cognitoClientId = process.env.COGNITO_CLIENT_ID;
+const awsRegion = process.env.RESTAURANTS_API;
 
 const days = [
   'Sunday',
@@ -32,18 +35,30 @@ const getRestaurants = async () => {
 
   aws4.sign(opts);
 
-  const httpReq = http.get(restaurantsApiRoot, {
+  const httpRequest = http.get(restaurantsApiRoot, {
     headers: opts.headers,
   });
-  return (await httpReq).data;
+  return (await httpRequest).data;
 };
 
 // eslint-disable-next-line no-unused-vars
 module.exports.handler = async (event, context) => {
   const restaurants = await getRestaurants();
   console.log(`found ${restaurants.length} restaurants`);
+
   const dayOfWeek = days[new Date().getDay()];
-  const html = Mustache.render(template, { dayOfWeek, restaurants });
+
+  const view = {
+    awsRegion,
+    cognitoUserPoolId,
+    cognitoClientId,
+    dayOfWeek,
+    restaurants,
+    searchUrl: `${restaurantsApiRoot}/search`,
+  };
+
+  const html = Mustache.render(template, view);
+
   const response = {
     statusCode: 200,
     headers: {
