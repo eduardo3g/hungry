@@ -1,0 +1,21 @@
+service: hungry
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+  environment:
+    STAGE: ${self:custom.stage}
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  get-index:
+    handler: src/functions/get-index.handler
+    events:
+      - http:
+          path: /
+          method: get
