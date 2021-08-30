@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/eduardo3g/hungry#readme",
   "devDependencies": {
+    "aws-sdk": "^2.979.0",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
