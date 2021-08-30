@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "sls": "serverless"
+    "sls": "serverless",
+    "exportEnv": "sls export-env --all"
   },
   "repository": {
     "type": "git",

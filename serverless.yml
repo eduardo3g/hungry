@@ -9,8 +9,13 @@ provider:
   environment:
     STAGE: ${self:custom.stage}
 
+plugins:
+  - serverless-export-env
+
 custom:
   stage: ${opt:stage, self:provider.stage}
+  export-env:
+    overwrite: true
 
 functions:
   get-index:
