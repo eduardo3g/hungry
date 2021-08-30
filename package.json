@@ -30,5 +30,9 @@
     "prettier": "^2.3.0",
     "serverless": "^2.56.0",
     "serverless-export-env": "^2.0.0"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "mustache": "^4.2.0"
   }
 }
