@@ -8,6 +8,12 @@ provider:
   region: eu-west-1
   environment:
     STAGE: ${self:custom.stage}
+    REST_API_URL:
+      Fn::Join:
+        - ''
+        - - https://
+          - !Ref ApiGatewayRestApi
+          - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action: dynamodb:scan
