@@ -6,7 +6,8 @@
   "scripts": {
     "sls": "serverless",
     "exportEnv": "sls export-env --all",
-    "seedRestaurants": "node src/util/seed-restaurants.js"
+    "seedRestaurants": "node src/util/seed-restaurants.js",
+    "test": "npm run exportEnv && jest"
   },
   "repository": {
     "type": "git",
