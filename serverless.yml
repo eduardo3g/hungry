@@ -42,6 +42,7 @@ functions:
             - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/restaurants
       COGNITO_USER_POOL_ID: !Ref CognitoUserPool
       COGNITO_CLIENT_ID: !Ref WebCognitoUserPoolClient
+      COGNITO_SERVER_CLIENT_ID: !Ref ServerCognitoUserPoolClient
     events:
       - http:
           path: /
