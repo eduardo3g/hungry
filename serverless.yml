@@ -28,7 +28,12 @@ functions:
   get-index:
     handler: src/functions/get-index.handler
     environment:
-      RESTAURANTS_API: !Sub https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}/restaurants
+      RESTAURANTS_API:
+        Fn::Join:
+          - ''
+          - - https://
+            - !Ref ApiGatewayRestApi
+            - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/restaurants
       COGNITO_USER_POOL_ID: !Ref CognitoUserPool
       COGNITO_CLIENT_ID: !Ref WebCognitoUserPoolClient
     events:
