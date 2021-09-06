@@ -24,6 +24,7 @@
     "aws-sdk": "^2.979.0",
     "awscred": "^1.5.0",
     "cheerio": "^1.0.0-rc.10",
+    "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -38,6 +39,7 @@
   "dependencies": {
     "aws4": "^1.11.0",
     "axios": "^0.21.1",
+    "lodash": "^4.17.21",
     "mustache": "^4.2.0"
   }
 }
