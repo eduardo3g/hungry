@@ -21,7 +21,9 @@ const viaHandler = async (event, functionName) => {
 };
 
 const we_invoke_get_index = () => viaHandler({}, 'get-index');
+const we_invoke_get_restaurants = () => viaHandler({}, 'get-restaurants');
 
 module.exports = {
   we_invoke_get_index,
+  we_invoke_get_restaurants,
 };
