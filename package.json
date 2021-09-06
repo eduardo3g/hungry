@@ -7,7 +7,8 @@
     "sls": "serverless",
     "exportEnv": "sls export-env --all",
     "seedRestaurants": "node src/util/seed-restaurants.js",
-    "test": "npm run exportEnv && cross-env TEST_MODE=handler jest --silent"
+    "test": "npm run exportEnv && cross-env TEST_MODE=handler jest --silent",
+    "acceptance": "npm run exportEnv && cross-env TEST_MODE=http jest --silent"
   },
   "repository": {
     "type": "git",
