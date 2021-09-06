@@ -22,6 +22,8 @@
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "aws-sdk": "^2.979.0",
+    "awscred": "^1.5.0",
+    "cheerio": "^1.0.0-rc.10",
     "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.2.1",
