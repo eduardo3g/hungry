@@ -1,15 +1,16 @@
 const DynamoDB = require('aws-sdk/clients/dynamodb');
+const middy = require('@middy/core');
+const ssm = require('@middy/ssm');
 
 const DocumentClient = new DynamoDB.DocumentClient();
 
-const defaultResults = process.env.DEFAULT_RESULTS || 8;
-const tableName = process.env.RESTAURANTS_TABLE;
+const { RESTAURANTS_TABLE, STAGE, SERVICE_NAME } = process.env;
 
 const getRestaurants = async limit => {
-  console.log(`fetching ${limit} restaurants from ${tableName}`);
+  console.log(`fetching ${limit} restaurants from ${RESTAURANTS_TABLE}`);
 
   const request = {
-    TableName: tableName,
+    TableName: RESTAURANTS_TABLE,
     Limit: limit,
   };
 
@@ -20,8 +21,8 @@ const getRestaurants = async limit => {
 };
 
 // eslint-disable-next-line no-unused-vars
-module.exports.handler = async (event, context) => {
-  const restaurants = await getRestaurants(defaultResults);
+module.exports.handler = middy(async (event, context) => {
+  const restaurants = await getRestaurants(context.config.defaultResults);
 
   const response = {
     statusCode: 200,
@@ -29,4 +30,13 @@ module.exports.handler = async (event, context) => {
   };
 
   return response;
-};
+}).use(
+  ssm({
+    cache: true, // cache SSM parameter value (reduce requests to SSM Parameter Store)
+    cacheExpiry: 1 * 60 * 1000,
+    setToContext: true, // required to store the parameter value in the context, instead of environment variable
+    fetchData: {
+      config: `/${SERVICE_NAME}/${STAGE}/get-restaurants/config`, // Parameter name of SSM Parameter Store
+    },
+  }),
+);
