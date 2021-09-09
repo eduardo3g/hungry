@@ -36,6 +36,8 @@ module.exports.handler = middy(async (event, context) => {
     context.config.defaultResults,
   );
 
+  console.log(context.secretString);
+
   const response = {
     statusCode: 200,
     body: JSON.stringify(restaurants),
@@ -49,6 +51,7 @@ module.exports.handler = middy(async (event, context) => {
     setToContext: true,
     fetchData: {
       config: `/${SERVICE_NAME}/${STAGE}/search-restaurants/config`,
+      secretString: `/${SERVICE_NAME}/${STAGE}/search-restaurants/secretString`,
     },
   }),
 );
