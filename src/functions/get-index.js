@@ -9,7 +9,7 @@ const restaurantsApiRoot = process.env.RESTAURANTS_API;
 const ordersApiRoot = process.env.ORDERS_API;
 const cognitoUserPoolId = process.env.COGNITO_USER_POOL_ID;
 const cognitoClientId = process.env.COGNITO_CLIENT_ID;
-const awsRegion = process.env.RESTAURANTS_API;
+const awsRegion = process.env.AWS_REGION;
 
 const days = [
   'Sunday',
