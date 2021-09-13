@@ -31,6 +31,9 @@ provider:
     - Effect: Allow
       Action: kms:Decrypt
       Resource: ${ssm:/${self:custom.stage}/kmsArn}
+    - Effect: Allow
+      Action: events:PutEvents
+      Resource: !GetAtt EventBus.Arn
 
 plugins:
   - serverless-export-env
@@ -78,6 +81,18 @@ functions:
             arn: !GetAtt CognitoUserPool.Arn
     environment:
       RESTAURANTS_TABLE: !Ref RestaurantsTable
+  place-order:
+    handler: src/functions/place-order.handler
+    events:
+      - http:
+          path: /orders
+          method: post
+          authorizer:
+            name: CognitoAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+    environment:
+      BUS_NAME: !Ref EventBus
 
 resources:
   Resources:
@@ -156,6 +171,10 @@ resources:
             - - https://
               - !Ref ApiGatewayRestApi
               - .execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
+    EventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: order_events_${self:custom.stage}
 
   Outputs:
     RestaurantsTableName:
@@ -171,3 +190,5 @@ resources:
 
     CognitoUserPoolServerClientId:
       Value: !Ref ServerCognitoUserPoolClient
+    EventBusName:
+      Value: !Ref EventBus
