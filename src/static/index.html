@@ -135,6 +135,7 @@
       const COGNITO_USER_POOL_ID = '{{cognitoUserPoolId}}';
       const CLIENT_ID = '{{cognitoClientId}}';
       const SEARCH_URL = '{{& searchUrl}}';
+      const PLACE_ORDER_URL = '{{& placeOrderUrl}}';
 
       var regDialog, regForm;
       var verifyDialog;
@@ -315,7 +316,7 @@
             for (var restaurant of restaurants) {
               restaurantsList.append(`
               <li class="restaurant">
-                <ul class="column-container">
+                <ul class="column-container" onclick='placeOrder("${restaurant.name}")'>
                     <li class="item restaurant-name">${restaurant.name}</li>
                     <li class="item restaurant-image">
                       <img src="${restaurant.image}">
@@ -324,6 +325,24 @@
               </li>
               `);
             }
+          } else if (xhr.readyState === 4) {
+            alert(xhr.responseText);
+          }
+        };
+      }
+
+      function placeOrder(restaurantName) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', PLACE_ORDER_URL, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', idToken);
+        xhr.send(JSON.stringify({ restaurantName }));
+
+        xhr.onreadystatechange = function (e) {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            alert(
+              "your order has been placed, we'll let you know once it's been accepted by the restaurant!",
+            );
           } else if (xhr.readyState === 4) {
             alert(xhr.responseText);
           }
@@ -432,7 +451,7 @@
             id="theme"
             type="text"
             size="50"
-            placeholder="enter a theme, eg. cartoon"
+            placeholder="enter a theme, eg. rick and morty"
           />
           <button onclick="searchRestaurants()">Find Restaurants</button>
         </li>
@@ -442,7 +461,7 @@
             <ul id="restaurantsUl" class="row-container">
               {{#restaurants}}
               <li class="restaurant">
-                <ul class="column-container">
+                <ul class="column-container" onclick='placeOrder("{{name}}")'>
                   <li class="item restaurant-name">{{name}}</li>
                   <li class="item restaurant-image">
                     <img src="{{image}}" />
