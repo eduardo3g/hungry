@@ -227,13 +227,20 @@ resources:
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
-            Effect: Allow
-            Principal: '*'
-            Action: SQS:SendMessage
-            Resource: !GetAtt E2eTestQueue.Arn
-            Condition:
-              ArnEquals:
-                aws:SourceArn: !Ref RestaurantNotificationTopic
+            - Effect: Allow
+              Principal: '*'
+              Action: SQS:SendMessage
+              Resource: !GetAtt E2eTestQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !Ref RestaurantNotificationTopic
+            - Effect: Allow
+              Principal: '*'
+              Action: SQS:SendMessage
+              Resource: !GetAtt E2eTestQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !GetAtt E2eTestEventBridgeRule.Arn
     E2eTestSnsSubscription:
       Type: AWS::SNS::Subscription
       Condition: IsE2eTest
@@ -243,7 +250,31 @@ resources:
         RawMessageDelivery: false # adds complete information about the message, not just the content
         Region: !Ref AWS::Region
         TopicArn: !Ref RestaurantNotificationTopic
-
+    E2eTestEventBridgeRule:
+      Type: AWS::Events::Rule
+      Condition: IsE2eTest
+      Properties:
+        EventBusName: !Ref EventBus
+        EventPattern:
+          source: ['hungry']
+        State: ENABLED
+        Targets:
+          - Arn: !GetAtt E2eTestQueue.Arn
+            Id: e2eTestQueue
+            InputTransformer:
+              InputPathsMap:
+                source: '$.source'
+                detailType: '$.detail-type'
+                detail: '$.detail'
+              InputTemplate: !Sub >
+                {
+                  "event": {
+                    "source": <source>,
+                    "detail-type": <detailType>,
+                    "detail": <detail>
+                  },
+                  "eventBusName": "${EventBus}"
+                }
   Outputs:
     RestaurantsTableName:
       Value: !Ref RestaurantsTable
