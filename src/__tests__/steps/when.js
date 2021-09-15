@@ -17,7 +17,7 @@ const viaHandler = async (event, functionName) => {
     'application/json',
   );
 
-  if (response.body && contentType === 'application/json') {
+  if (_.get(response, 'body') && contentType === 'application/json') {
     response.body = JSON.parse(response.body);
   }
 
@@ -129,9 +129,18 @@ const we_invoke_place_order = async (user, restaurantName) => {
   }
 };
 
+const we_invoke_notify_restaurant = async event => {
+  if (mode === 'handler') {
+    await viaHandler(event, 'notify-restaurant');
+  } else {
+    throw new Error(`unsupported mode: ${mode}`);
+  }
+};
+
 module.exports = {
   we_invoke_get_index,
   we_invoke_get_restaurants,
   we_invoke_search_restaurants,
   we_invoke_place_order,
+  we_invoke_notify_restaurant,
 };
