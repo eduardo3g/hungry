@@ -37,11 +37,18 @@ const startListening = () => {
       messageIds.add(message.MessageId);
 
       const body = JSON.parse(message.Body);
+
       if (body.TopicArn) {
         messages.next({
           sourceType: 'sns',
           source: body.TopicArn,
           message: body.Message,
+        });
+      } else if (body.eventBusName) {
+        messages.next({
+          sourceType: 'eventbridge',
+          source: body.eventBusName,
+          message: JSON.stringify(body.event),
         });
       }
     });

@@ -1,12 +1,8 @@
-const AWS = require('aws-sdk');
 const when = require('../steps/when');
 const given = require('../steps/given');
 const tearDown = require('../steps/teardown');
 const { init } = require('../steps/init');
-
-const mockPutEvents = jest.fn();
-
-AWS.EventBridge.prototype.putEvents = mockPutEvents;
+const messages = require('../messages');
 
 describe('Given an authenticated user', () => {
   let user;
@@ -24,11 +20,7 @@ describe('Given an authenticated user', () => {
     let response;
 
     beforeAll(async () => {
-      mockPutEvents.mockClear();
-      mockPutEvents.mockReturnValue({
-        promise: async () => {},
-      });
-
+      messages.startListening();
       response = await when.we_invoke_place_order(user, 'Fangtasia');
     });
 
@@ -36,19 +28,21 @@ describe('Given an authenticated user', () => {
       expect(response.statusCode).toEqual(200);
     });
 
-    if (process.env.TEST_MODE === 'handler') {
-      it('Should publish a message to EventBridge bus', async () => {
-        expect(mockPutEvents).toBeCalledWith({
-          Entries: [
-            expect.objectContaining({
-              Source: 'hungry',
-              DetailType: 'order_placed',
-              Detail: expect.stringContaining(`"restaurantName":"Fangtasia"`),
-              EventBusName: expect.stringMatching(process.env.BUS_NAME),
-            }),
-          ],
-        });
-      });
-    }
+    it('Should publish a message to EventBridge bus', async () => {
+      const { orderId } = response.body;
+
+      await messages.waitForMessage(
+        'eventbridge',
+        process.env.BUS_NAME,
+        JSON.stringify({
+          source: 'hungry',
+          'detail-type': 'order_placed',
+          detail: {
+            orderId,
+            restaurantName: 'Fangtasia',
+          },
+        }),
+      );
+    }, 10000);
   });
 });
