@@ -119,6 +119,11 @@ functions:
       RESTAURANT_NOTIFICATION_TOPIC: !Ref RestaurantNotificationTopic
 
 resources:
+  Conditions:
+    IsE2eTest:
+      Fn::Equals:
+        - ${self:custom.stage}
+        - dev
   Resources:
     RestaurantsTable:
       Type: AWS::DynamoDB::Table
@@ -201,6 +206,37 @@ resources:
         Name: order_events_${self:custom.stage}
     RestaurantNotificationTopic:
       Type: AWS::SNS::Topic
+    E2eTestQueue:
+      Type: AWS::SQS::Queue
+      Condition: IsE2eTest
+      Properties:
+        MessageRetentionPeriod: 60 # seconds
+        VisibilityTimeout: 1 # seconds
+    E2eTestQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Condition: IsE2eTest
+      Properties:
+        Queues:
+          - !Ref E2eTestQueue
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            Effect: Allow
+            Principal: '*'
+            Action: SQS:SendMessage
+            Resource: !GetAtt E2eTestQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref RestaurantNotificationTopic
+    E2eTestSnsSubscription:
+      Type: AWS::SNS::Subscription
+      Condition: IsE2eTest
+      Properties:
+        Protocol: sqs
+        Endpoint: !GetAtt E2eTestQueue.Arn
+        RawMessageDelivery: false # adds complete information about the message, not just the content
+        Region: !Ref AWS::Region
+        TopicArn: !Ref RestaurantNotificationTopic
 
   Outputs:
     RestaurantsTableName:
@@ -216,9 +252,16 @@ resources:
 
     CognitoUserPoolServerClientId:
       Value: !Ref ServerCognitoUserPoolClient
+
     EventBusName:
       Value: !Ref EventBus
+
     RestaurantNotificationTopicName:
       Value: !GetAtt RestaurantNotificationTopic.TopicName
+
     RestaurantNotificationTopicArn:
       Value: !Ref RestaurantNotificationTopic
+
+    E2eTestQueueUrl:
+      Condition: IsE2eTest
+      Value: !Ref E2eTestQueue
