@@ -36,7 +36,8 @@
     "jest": "^27.1.0",
     "prettier": "^2.3.0",
     "serverless": "^2.56.0",
-    "serverless-export-env": "^2.0.0"
+    "serverless-export-env": "^2.0.0",
+    "serverless-export-outputs": "^1.0.2"
   },
   "dependencies": {
     "@middy/core": "^2.5.1",
