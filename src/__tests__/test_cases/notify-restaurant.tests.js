@@ -3,21 +3,27 @@ const chance = require('chance').Chance();
 
 const { init } = require('../steps/init');
 const when = require('../steps/when');
-
-console.log = jest.fn();
+const messages = require('../messages');
 
 const mockPutEvents = jest.fn();
-AWS.EventBridge.prototype.putEvents = mockPutEvents;
 const mockPublish = jest.fn();
-AWS.SNS.prototype.publish = mockPublish;
 
-describe('When we invoke the notify-restaurant function', () => {
-  if (process.env.TEST_MODE === 'handler') {
-    beforeAll(async () => {
-      await init();
+describe(`When we invoke the notify-restaurant function`, () => {
+  const event = {
+    source: 'hungry',
+    'detail-type': 'order_placed',
+    detail: {
+      orderId: chance.guid(),
+      restaurantName: 'Fangtasia',
+    },
+  };
 
-      mockPutEvents.mockClear();
-      mockPublish.mockClear();
+  beforeAll(async () => {
+    await init();
+
+    if (process.env.TEST_MODE === 'handler') {
+      AWS.EventBridge.prototype.putEvents = mockPutEvents;
+      AWS.SNS.prototype.publish = mockPublish;
 
       mockPutEvents.mockReturnValue({
         promise: async () => {},
@@ -25,20 +31,22 @@ describe('When we invoke the notify-restaurant function', () => {
       mockPublish.mockReturnValue({
         promise: async () => {},
       });
+    } else {
+      messages.startListening();
+    }
 
-      const event = {
-        source: 'hungry',
-        'detail-type': 'order_placed',
-        detail: {
-          orderId: chance.guid(),
-          userEmail: chance.email(),
-          restaurantName: 'Fangtasia',
-        },
-      };
-      await when.we_invoke_notify_restaurant(event);
-    });
+    await when.we_invoke_notify_restaurant(event);
+  });
 
-    it('Should publish message to SNS', async () => {
+  afterAll(() => {
+    if (process.env.TEST_MODE === 'handler') {
+      mockPutEvents.mockClear();
+      mockPublish.mockClear();
+    }
+  });
+
+  if (process.env.TEST_MODE === 'handler') {
+    it(`Should publish message to SNS`, async () => {
       expect(mockPublish).toBeCalledWith({
         Message: expect.stringMatching(`"restaurantName":"Fangtasia"`),
         TopicArn: expect.stringMatching(
@@ -47,7 +55,7 @@ describe('When we invoke the notify-restaurant function', () => {
       });
     });
 
-    it('Should publish event to EventBridge', async () => {
+    it(`Should publish event to EventBridge`, async () => {
       expect(mockPutEvents).toBeCalledWith({
         Entries: [
           expect.objectContaining({
@@ -60,6 +68,12 @@ describe('When we invoke the notify-restaurant function', () => {
       });
     });
   } else {
-    it('no acceptance test', () => {});
+    it(`Should publish message to SNS`, async () => {
+      await messages.waitForMessage(
+        'sns',
+        process.env.RESTAURANT_NOTIFICATION_TOPIC,
+        JSON.stringify(event.detail),
+      );
+    }, 10000);
   }
 });
