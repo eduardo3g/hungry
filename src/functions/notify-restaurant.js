@@ -1,10 +1,11 @@
 const EventBridge = require('aws-sdk/clients/eventbridge');
+const XRay = require('aws-xray-sdk-core');
 const SNS = require('aws-sdk/clients/sns');
 const Log = require('@dazn/lambda-powertools-logger');
 const wrap = require('@dazn/lambda-powertools-pattern-basic');
 
-const eventBridge = new EventBridge();
-const sns = new SNS();
+const eventBridge = XRay.captureAWSClient(new EventBridge());
+const sns = XRay.captureAWSClient(new SNS());
 
 const { BUS_NAME: busName, RESTAURANT_NOTIFICATION_TOPIC: topicArn } =
   process.env;
