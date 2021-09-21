@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const Log = require('@dazn/lambda-powertools-logger');
 const Mustache = require('mustache');
 const http = require('axios');
 const aws4 = require('aws4');
@@ -27,7 +28,7 @@ const template = fs.readFileSync(
 );
 
 const getRestaurants = async () => {
-  console.log(`loading restaurants from ${restaurantsApiRoot}...`);
+  Log.debug('getting restaurants...', { url: restaurantsApiRoot });
   const url = URL.parse(restaurantsApiRoot);
   const opts = {
     host: url.hostname,
@@ -45,7 +46,7 @@ const getRestaurants = async () => {
 // eslint-disable-next-line no-unused-vars
 module.exports.handler = async (event, context) => {
   const restaurants = await getRestaurants();
-  console.log(`found ${restaurants.length} restaurants`);
+  Log.debug('got restaurants', { count: restaurants.length });
 
   const dayOfWeek = days[new Date().getDay()];
 
