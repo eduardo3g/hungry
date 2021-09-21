@@ -46,6 +46,7 @@
     "@dazn/lambda-powertools-pattern-basic": "^1.29.0",
     "@middy/core": "^2.5.1",
     "@middy/ssm": "^2.5.1",
+    "aws-xray-sdk-core": "^3.3.3",
     "aws4": "^1.11.0",
     "axios": "^0.21.1",
     "chance": "^1.1.8",
