@@ -16,6 +16,7 @@ provider:
           - .execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
     SERVICE_NAME: ${self:service}
     LOG_LEVEL: ${self:custom.logLevel.${self:custom.stage}, self:custom.logLevel.default}
+    SAMPLE_DEBUG_LOG_RATE: 0.1
   eventBridge:
     useCloudFormation: true
 

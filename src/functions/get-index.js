@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Log = require('@dazn/lambda-powertools-logger');
+const wrap = require('@dazn/lambda-powertools-pattern-basic');
 const Mustache = require('mustache');
 const http = require('axios');
 const aws4 = require('aws4');
@@ -44,7 +45,7 @@ const getRestaurants = async () => {
 };
 
 // eslint-disable-next-line no-unused-vars
-module.exports.handler = async (event, context) => {
+module.exports.handler = wrap(async (event, context) => {
   const restaurants = await getRestaurants();
   Log.debug('got restaurants', { count: restaurants.length });
 
@@ -71,4 +72,4 @@ module.exports.handler = async (event, context) => {
   };
 
   return response;
-};
+});
