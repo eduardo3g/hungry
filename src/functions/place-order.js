@@ -1,12 +1,13 @@
 const EventBridge = require('aws-sdk/clients/eventbridge');
 const Log = require('@dazn/lambda-powertools-logger');
+const wrap = require('@dazn/lambda-powertools-pattern-basic');
 
 const eventBridge = new EventBridge();
 const chance = require('chance').Chance();
 
 const { BUS_NAME } = process.env;
 
-module.exports.handler = async event => {
+module.exports.handler = wrap(async event => {
   const { restaurantName } = JSON.parse(event.body);
 
   const orderId = chance.guid();
@@ -40,4 +41,4 @@ module.exports.handler = async event => {
   };
 
   return response;
-};
+});
