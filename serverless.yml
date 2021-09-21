@@ -13,8 +13,9 @@ provider:
         - ''
         - - https://
           - !Ref ApiGatewayRestApi
-          - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}
+          - .execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
     SERVICE_NAME: ${self:service}
+    LOG_LEVEL: ${self:custom.logLevel.${self:custom.stage}, self:custom.logLevel.default}
   eventBridge:
     useCloudFormation: true
 
@@ -32,6 +33,9 @@ custom:
       - E2eTestQueueUrl
     output:
       file: ./.env.outputs
+  logLevel:
+    prod: INFO
+    default: DEBUG
 
 functions:
   get-index:
@@ -42,13 +46,13 @@ functions:
           - ''
           - - https://
             - !Ref ApiGatewayRestApi
-            - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/restaurants
+            - .execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}/restaurants
       ORDERS_API:
         Fn::Join:
           - ''
           - - https://
             - !Ref ApiGatewayRestApi
-            - .execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/orders
+            - .execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}/orders
       COGNITO_USER_POOL_ID: !Ref CognitoUserPool
       COGNITO_CLIENT_ID: !Ref WebCognitoUserPoolClient
       COGNITO_SERVER_CLIENT_ID: !Ref ServerCognitoUserPoolClient
@@ -59,7 +63,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action: execute-api:Invoke
-        Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/${self:provider.stage}/GET/restaurants
+        Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/${self:custom.stage}/GET/restaurants
   get-restaurants:
     handler: src/functions/get-restaurants.handler
     events:
@@ -75,7 +79,7 @@ functions:
         Resource: !GetAtt RestaurantsTable.Arn
       - Effect: Allow
         Action: ssm:GetParameters*
-        Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${self:provider.stage}/get-restaurants/config
+        Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${self:custom.stage}/get-restaurants/config
   search-restaurants:
     handler: src/functions/search-restaurants.handler
     events:
@@ -95,8 +99,8 @@ functions:
       - Effect: Allow
         Action: ssm:GetParameters*
         Resource:
-          - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${self:provider.stage}/search-restaurants/config
-          - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${self:provider.stage}/search-restaurants/secretString
+          - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${self:custom.stage}/search-restaurants/config
+          - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${self:custom.stage}/search-restaurants/secretString
       - Effect: Allow
         Action: kms:Decrypt
         Resource: ${ssm:/dev/kmsArn}
