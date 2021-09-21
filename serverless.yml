@@ -34,6 +34,7 @@ plugins:
   - serverless-export-env
   - serverless-export-outputs
   - serverless-iam-roles-per-function
+  - serverless-lumigo
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -49,6 +50,10 @@ custom:
     default: DEBUG
   serverless-iam-roles-per-function:
     defaultInherit: true
+  lumigo:
+    token: ${ssm:/lumigo/tracing-token}
+    nodePackageManager: npm
+    skipInstallNodeTracer: true
 
 functions:
   get-index:
