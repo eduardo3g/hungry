@@ -39,11 +39,13 @@
     "serverless": "^2.56.0",
     "serverless-export-env": "^2.0.0",
     "serverless-export-outputs": "^1.0.2",
-    "serverless-iam-roles-per-function": "^3.2.0"
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-lumigo": "^1.12.7"
   },
   "dependencies": {
     "@dazn/lambda-powertools-logger": "^1.28.1",
     "@dazn/lambda-powertools-pattern-basic": "^1.29.0",
+    "@lumigo/tracer": "^1.63.1",
     "@middy/core": "^2.5.1",
     "@middy/ssm": "^2.5.1",
     "aws-xray-sdk-core": "^3.3.3",
