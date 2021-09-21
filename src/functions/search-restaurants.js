@@ -1,7 +1,7 @@
 const DynamoDB = require('aws-sdk/clients/dynamodb');
-const middy = require('@middy/core');
 const ssm = require('@middy/ssm');
 const Log = require('@dazn/lambda-powertools-logger');
+const wrap = require('@dazn/lambda-powertools-pattern-basic');
 
 const DocumentClient = new DynamoDB.DocumentClient();
 
@@ -33,7 +33,7 @@ const findRestaurantsByTheme = async (theme, limit) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-module.exports.handler = middy(async (event, context) => {
+module.exports.handler = wrap(async (event, context) => {
   const request = JSON.parse(event.body);
   const { theme } = request;
   const restaurants = await findRestaurantsByTheme(
