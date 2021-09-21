@@ -24,10 +24,7 @@ module.exports.handler = wrap(async event => {
 
   const { restaurantName, orderId } = order;
 
-  Log.debug('notified restaurant', {
-    restaurantName,
-    orderId,
-  });
+  Log.debug('notified restaurant');
 
   await eventBridge
     .putEvents({
