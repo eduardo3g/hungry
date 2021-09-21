@@ -17,6 +17,7 @@ provider:
     SERVICE_NAME: ${self:service}
     LOG_LEVEL: ${self:custom.logLevel.${self:custom.stage}, self:custom.logLevel.default}
     SAMPLE_DEBUG_LOG_RATE: 0.1
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
   eventBridge:
     useCloudFormation: true
   tracing:
