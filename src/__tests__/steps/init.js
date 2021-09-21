@@ -19,6 +19,10 @@ const init = async () => {
   process.env.AWS_SECRET_ACCESS_KEY = credentials.secretAccessKey;
   process.env.AWS_REGION = region;
 
+  // stops X-Ray SDK from erroring when it doesn't find the context
+  process.env.AWS_XRAY_CONTEXT_MISSING = 'LOG_ERROR';
+  console.error = jest.fn();
+
   if (credentials.sessionToken) {
     process.env.AWS_SESSION_TOKEN = credentials.sessionToken;
   }
