@@ -42,6 +42,8 @@
     "serverless-iam-roles-per-function": "^3.2.0"
   },
   "dependencies": {
+    "@dazn/lambda-powertools-correlation-ids": "^1.28.1",
+    "@dazn/lambda-powertools-eventbridge-client": "^1.28.1",
     "@dazn/lambda-powertools-logger": "^1.28.1",
     "@dazn/lambda-powertools-pattern-basic": "^1.29.0",
     "@middy/core": "^2.5.1",

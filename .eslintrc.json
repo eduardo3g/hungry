@@ -26,6 +26,7 @@
     "global-require": "off",
     "no-return-await": "off",
     "no-restricted-syntax": "off",
-    "prefer-const": "off"
+    "prefer-const": "off",
+    "prefer-object-spread": "off"
   }
 }
