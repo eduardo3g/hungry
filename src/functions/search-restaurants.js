@@ -1,9 +1,12 @@
 const DynamoDB = require('aws-sdk/clients/dynamodb');
+const XRay = require('aws-xray-sdk-core');
 const ssm = require('@middy/ssm');
 const Log = require('@dazn/lambda-powertools-logger');
 const wrap = require('@dazn/lambda-powertools-pattern-basic');
 
 const DocumentClient = new DynamoDB.DocumentClient();
+
+XRay.captureAWSClient(DocumentClient.service);
 
 const { RESTAURANTS_TABLE, SERVICE_NAME, STAGE } = process.env;
 
