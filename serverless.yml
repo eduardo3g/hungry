@@ -58,6 +58,7 @@ custom:
 functions:
   get-index:
     handler: src/functions/get-index.handler
+    memorySize: 128
     environment:
       RESTAURANTS_API:
         Fn::Join:
@@ -84,6 +85,7 @@ functions:
         Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/${self:custom.stage}/GET/restaurants
   get-restaurants:
     handler: src/functions/get-restaurants.handler
+    memorySize: 512
     events:
       - http:
           path: /restaurants
