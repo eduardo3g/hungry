@@ -53,7 +53,7 @@ Sounds fun, right? 🤟
 * AWS IAM user with administrator role and programmatic access (access key id and access secret key)
 * <a href="https://lumigo.io/">Lumigo</a> account - grab the tracer token from your account settings
 
-# 🌱 Deploying the app
+# ⚙️ Deploying the app
 * Get the tracing token from Lumigo
   - Open Lumigo (I assume you already have an account)
   - Click on Settings > Tracing
@@ -81,6 +81,21 @@ npm install
 npx sls deploy
 
 # Grab the API URL on the terminal output
+```
+
+# 🌱 Seeding the database
+
+Run the following command to seed restaurants to DynamoDB:
+
+```
+# Generate a .env file on your root directory
+npm run exportEnv
+
+# Seed the database
+cd util
+
+# It'll create 8 items on the Restaurants table on DynamoDB
+node seed-restaurants.js
 ```
 
 # 🐞 Issues
