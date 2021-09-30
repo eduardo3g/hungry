@@ -47,6 +47,42 @@ The entire application was built using Cloud-Native services provided by AWS.
 
 Sounds fun, right? 🤟
 
+# ✔️ Requirements
+* Node.js 12.x+
+* AWS account
+* AWS IAM user with administrator role and programmatic access (access key id and access secret key)
+* <a href="https://lumigo.io/">Lumigo</a> account - grab the tracer token from your account settings
+
+# 🌱 Deploying the app
+* Get the tracing token from Lumigo
+  - Open Lumigo (I assume you already have an account)
+  - Click on Settings > Tracing
+  - Get the `Manual tracing` token
+* Configure an SSM Parameter on AWS to store Lumigo's token
+  - Open the AWS Console
+  - Select the `Systems Manager` (aka. SSM) service
+  - Select `Parameter Store` on the left menu
+  - Create a new parameter
+  - Name this parameter as `/lumigo/tracing-token` (it must have this name)
+  - Paste the tracing token from Lumigo on the value field and hit save
+
+* Deploy the stack
+```
+# Clone this repository
+git clone https://github.com/eduardo3g/hungry.git
+
+# Move yourself to the root directory
+cd hungry
+
+# Install the dependencies with NPM
+npm install
+
+# Deploy the stack (by detault it'll create a 'dev' stack)
+npx sls deploy
+
+# Grab the API URL on the terminal output
+```
+
 # 🐞 Issues
 
 Feel free to <b>create a new issue</b> with an detailed title and description. If you already have a solution to fix the problem, I would be very happy to <b>review your pull request</b>.
