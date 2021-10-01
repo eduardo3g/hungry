@@ -20,8 +20,6 @@
 
 This project was built on top of the main Serverless managed services from AWS. It follows an event-driven architecture and patterns of production-ready applications.<br/>
 
-The entire application was built using Cloud-Native services provided by AWS.
-
 # 👨🏽‍🔧 Tech stack
 
 * 🏡 <a href="https://aws.amazon.com/api-gateway/">AWS API Gateway</a> - a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure APIs at any scale.
